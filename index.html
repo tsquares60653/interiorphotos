@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travel Portfolio</title>
+    <title>Travel Photography Virtual Tour</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -12,18 +12,111 @@
     <div id="root"></div>
     <script type="text/babel">
         const { useState } = React;
-        function VirtualGalleryWalk() {
+        function VirtualTour() {
           const [currentRoom, setCurrentRoom] = useState(0);
           const [selectedArtwork, setSelectedArtwork] = useState(null);
+          
           const rooms = [
-            { id: 0, name: "Suite Entrance", description: "You enter a serene suite foyer. Soft natural light spills across marble floors.", bgColor: "#faf8f5", artworks: [{ id: "a1", title: "Machu Picchu at Sunrise", film: "Hasselblad 500C/M - Fujicolor Pro", x: 50, y: 35, width: 300, height: 400, narrative: "This monumental travel study anchors the entrance. Guests pause here and experience the misty Andean light.", placement: "Primary focal point above console table", scale: "60 x 40 inches" }] },
-            { id: 1, name: "Master Bedroom", description: "You step into the bedroom. Soft light from floor-to-ceiling windows illuminates the space.", bgColor: "#fdf9f6", artworks: [{ id: "a2", title: "Venice Waterways", film: "Pentax 67II - Kodak Portra 400", x: 50, y: 40, width: 320, height: 240, narrative: "A meditative presence above the bed. The soft reflected light of Venetian canals becomes the first thing guests see upon waking.", placement: "Above bed, subtle matting in natural linen", scale: "64 x 48 inches" }] },
-            { id: 2, name: "Dining Room", description: "You move into the dining area. Elegant tables are set beneath soft pendant lighting.", bgColor: "#faf8f5", artworks: [{ id: "a4", title: "Moroccan Bazaar", film: "Hasselblad 500C/M - Fujicolor Velvia", x: 50, y: 30, width: 280, height: 280, narrative: "This warm travel image hangs on the accent wall. Diners are submerged in color and texture as each course becomes a journey.", placement: "Feature wall, gallery-style grouping", scale: "56 x 56 inches" }] },
-            { id: 3, name: "Private Lounge", description: "You step into the lounge. It is intimate and sophisticated.", bgColor: "#fdf9f6", artworks: [{ id: "a6", title: "Japanese Temple Garden", film: "Hasselblad 500C/M - Kodak Portra 160", x: 50, y: 35, width: 340, height: 450, narrative: "A monumental work. Private diners sit beneath this serene study in a moment of contemplation.", placement: "Primary wall, salon-style framing", scale: "68 x 48 inches" }] },
-            { id: 4, name: "Living Room", description: "You enter a light-filled room. Floor-to-ceiling windows overlook the landscape.", bgColor: "#faf8f5", artworks: [{ id: "a7", title: "Icelandic Black Sand Beach", film: "Pentax 67II - Kodak Portra 400", x: 50, y: 40, width: 320, height: 240, narrative: "A dramatic moody landscape anchors the seating area. Its dark contemplative tones provide visual depth.", placement: "Above sofa, dramatic scale", scale: "64 x 48 inches" }] },
-            { id: 5, name: "Study", description: "You move into the office. Bookshelves line the walls with curated travel photography.", bgColor: "#fdf9f6", artworks: [{ id: "a8", title: "Peruvian Mountain Village", film: "Leica M6 - Fujicolor Pro", x: 50, y: 45, width: 240, height: 240, narrative: "An intimate work among the books. This photograph speaks to curiosity and worldliness.", placement: "Gallery wall arrangement", scale: "48 x 48 inches" }] }
+            { 
+              id: 0, 
+              name: "Suite Entrance", 
+              description: "You enter a serene suite foyer. Soft natural light spills across marble floors.", 
+              bgColor: "#faf8f5", 
+              artworks: [{ 
+                id: "a1", 
+                title: "Photograph 1", 
+                x: 50, y: 35, 
+                width: 300, height: 400, 
+                imageUrl: "https://static.wixstatic.com/media/87f849_b94cd47f31f5438ba5fbdc9d100af677~mv2.jpg/v1/fit/w_600,h_600,q_85,enc_avif,quality_auto/87f849_b94cd47f31f5438ba5fbdc9d100af677~mv2.jpg",
+                narrative: "Your travel photography transforms this entrance into a gateway of discovery.", 
+                placement: "Primary focal point above console", 
+                scale: "60 x 40 inches" 
+              }] 
+            },
+            { 
+              id: 1, 
+              name: "Master Bedroom", 
+              description: "You step into the bedroom. Soft light from floor-to-ceiling windows.", 
+              bgColor: "#fdf9f6", 
+              artworks: [{ 
+                id: "a2", 
+                title: "Photograph 2", 
+                x: 50, y: 40, 
+                width: 320, height: 240, 
+                imageUrl: "https://static.wixstatic.com/media/87f849_d888367849c4489fac8410db48145bc4~mv2.jpg/v1/fit/w_600,h_600,q_85,enc_avif,quality_auto/87f849_d888367849c4489fac8410db48145bc4~mv2.jpg",
+                narrative: "This piece above the bed becomes a meditative anchor for the space.", 
+                placement: "Above bed, subtle matting", 
+                scale: "64 x 48 inches" 
+              }] 
+            },
+            { 
+              id: 2, 
+              name: "Dining Room", 
+              description: "You move into the dining area. Elegant tables beneath soft lighting.", 
+              bgColor: "#faf8f5", 
+              artworks: [{ 
+                id: "a3", 
+                title: "Photograph 3", 
+                x: 50, y: 30, 
+                width: 280, height: 280, 
+                imageUrl: "https://static.wixstatic.com/media/87f849_bca3730fab014b4db6a4b38b4fae72db~mv2_d_3637_2433_s_4_2.jpg/v1/fit/w_600,h_600,q_85,enc_avif,quality_auto/87f849_bca3730fab014b4db6a4b38b4fae72db~mv2_d_3637_2433_s_4_2.jpg",
+                narrative: "Diners are enveloped in color and texture as they share meals and moments.", 
+                placement: "Feature wall, gallery style", 
+                scale: "56 x 56 inches" 
+              }] 
+            },
+            { 
+              id: 3, 
+              name: "Private Lounge", 
+              description: "You step into the lounge. Intimate and sophisticated.", 
+              bgColor: "#fdf9f6", 
+              artworks: [{ 
+                id: "a4", 
+                title: "Photograph 4", 
+                x: 50, y: 35, 
+                width: 340, height: 450, 
+                imageUrl: "https://static.wixstatic.com/media/87f849_75bae3de86454fb7bef6083f841747ca~mv2_d_3637_2433_s_4_2.jpg/v1/fit/w_600,h_600,q_85,enc_avif,quality_auto/87f849_75bae3de86454fb7bef6083f841747ca~mv2_d_3637_2433_s_4_2.jpg",
+                narrative: "A monumental presence. Conversations unfold beneath this serene composition.", 
+                placement: "Primary wall, salon framing", 
+                scale: "68 x 48 inches" 
+              }] 
+            },
+            { 
+              id: 4, 
+              name: "Living Room", 
+              description: "You enter a light-filled room. Floor-to-ceiling windows overlook the landscape.", 
+              bgColor: "#faf8f5", 
+              artworks: [{ 
+                id: "a5", 
+                title: "Photograph 5", 
+                x: 50, y: 40, 
+                width: 320, height: 240, 
+                imageUrl: "https://static.wixstatic.com/media/87f849_c23ab02f57a440b18896a5d51ccbd674~mv2.jpg/v1/fit/w_600,h_600,q_85,enc_avif,quality_auto/87f849_c23ab02f57a440b18896a5d51ccbd674~mv2.jpg",
+                narrative: "A dramatic anchor for the seating area. This work grows richer as light shifts.", 
+                placement: "Above sofa, dramatic scale", 
+                scale: "64 x 48 inches" 
+              }] 
+            },
+            { 
+              id: 5, 
+              name: "Study", 
+              description: "You move into the office. Bookshelves line the walls with curated pieces.", 
+              bgColor: "#fdf9f6", 
+              artworks: [{ 
+                id: "a6", 
+                title: "Photograph 6", 
+                x: 50, y: 45, 
+                width: 240, height: 240, 
+                imageUrl: "https://static.wixstatic.com/media/87f849_cf951a58d76d4bd0bf22b362dd4dbf7c~mv2.jpg/v1/fit/w_600,h_600,q_85,enc_avif,quality_auto/87f849_cf951a58d76d4bd0bf22b362dd4dbf7c~mv2.jpg",
+                narrative: "An intimate work among the books. This speaks to curiosity and worldliness.", 
+                placement: "Gallery wall arrangement", 
+                scale: "48 x 48 inches" 
+              }] 
+            }
           ];
+
           const currentRoomData = rooms[currentRoom];
+          
           return (
             <div style={{ fontFamily: 'system-ui, -apple-system, sans-serif', backgroundColor: '#fafaf8', minHeight: '100vh' }}>
               <style>{`
@@ -31,80 +124,18 @@
                 * { margin: 0; padding: 0; box-sizing: border-box; }
                 .gallery-container { display: flex; height: 100vh; background: #fafaf8; }
                 .viewer-section { flex: 1; display: flex; flex-direction: column; }
-                .room-view { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; }
+                .room-view { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
                 .room-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
                 .room-background::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%; background: linear-gradient(180deg, #e8e3de 0%, #d9d0c8 100%); }
                 .room-background::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(180deg, #f5ede4 0%, #ebe3da 100%); }
                 .room-canvas { width: 100%; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; }
                 .room-space { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1; }
-                .artwork { position: absolute; cursor: pointer; border: 8px solid #d4c5b9; background: linear-gradient(135deg, #e8ddd3 0%, #ddd2c8 100%); display: flex; align-items: center; justify-content: center; color: #999; font-size: 14px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
-                .artwork:hover { box-shadow: 0 12px 48px rgba(0,0,0,0.18); transform: scale(1.02); cursor: pointer; }
+                .artwork { position: absolute; cursor: pointer; border: 8px solid #d4c5b9; background: white; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(0,0,0,0.12); overflow: hidden; }
+                .artwork-image { width: 100%; height: 100%; object-fit: cover; }
+                .artwork:hover { box-shadow: 0 12px 48px rgba(0,0,0,0.18); transform: scale(1.02); }
                 .artwork.selected { box-shadow: 0 16px 64px rgba(0,0,0,0.25); }
                 .navigation-bar { padding: 1.5rem; background: white; border-top: 1px solid #e8ddd3; display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; }
                 .nav-button { width: 44px; height: 44px; border: 1px solid #d0c5ba; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1a1a1a; border-radius: 2px; font-size: 18px; }
                 .nav-button:hover:not(:disabled) { background: #f5f0eb; border-color: #b8aea3; }
                 .nav-button:disabled { opacity: 0.4; cursor: not-allowed; }
-                .room-counter { font-family: 'Poppins', sans-serif; font-size: 0.85rem; color: #999; text-transform: uppercase; letter-spacing: 1px; flex: 1; text-align: center; }
-                .info-panel { width: 380px; background: white; border-left: 1px solid #e8ddd3; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; }
-                .room-info { padding: 2rem; background: #faf8f5; border-bottom: 1px solid #e8ddd3; margin-bottom: 1rem; }
-                .room-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: #1a1a1a; margin: 0 0 0.5rem 0; }
-                .room-description { font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: #666; line-height: 1.6; margin: 0; }
-                .artwork-heading { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: #1a1a1a; margin: 0 0 0.5rem 0; }
-                .close-btn { background: none; border: none; cursor: pointer; color: #999; padding: 0; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-                .close-btn:hover { color: #1a1a1a; }
-                .narrative-text { font-family: 'Poppins', sans-serif; font-size: 0.95rem; color: #666; line-height: 1.7; margin: 0; }
-                .panel-section { margin-bottom: 2rem; }
-                .section-label { font-family: 'Poppins', sans-serif; font-size: 0.75rem; color: #999; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.7rem; font-weight: 600; }
-                .spec-row { display: flex; justify-content: space-between; padding-bottom: 0.8rem; font-family: 'Poppins', sans-serif; font-size: 0.9rem; border-bottom: 1px solid #f0ebe5; }
-                .spec-label { color: #999; font-weight: 500; }
-                .spec-value { color: #1a1a1a; font-weight: 500; }
-                .empty-state { color: #999; text-align: center; padding: 2rem; }
-                @media (max-width: 768px) { .gallery-container { flex-direction: column; } .info-panel { width: 100%; border-left: none; border-top: 1px solid #e8ddd3; } }
-              `}</style>
-              <div className="gallery-container">
-                <div className="viewer-section">
-                  <div className="room-view">
-                    <div className="room-background" style={{ backgroundColor: currentRoomData.bgColor }} />
-                    <div className="room-canvas">
-                      <div className="room-space">
-                        {currentRoomData.artworks.map((art) => (
-                          <div key={art.id} className={`artwork ${selectedArtwork && selectedArtwork.id === art.id ? 'selected' : ''}`} style={{ left: art.x + '%', top: art.y + '%', transform: 'translate(-50%, -50%)', width: art.width + 'px', height: art.height + 'px' }} onClick={() => setSelectedArtwork(art)}>
-                            {art.title}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="navigation-bar">
-                    <button className="nav-button" onClick={() => { if (currentRoom > 0) setCurrentRoom(currentRoom - 1); setSelectedArtwork(null); }} disabled={currentRoom === 0}>← Prev</button>
-                    <div className="room-counter">{currentRoom + 1} / {rooms.length}</div>
-                    <button className="nav-button" onClick={() => { if (currentRoom < rooms.length - 1) setCurrentRoom(currentRoom + 1); setSelectedArtwork(null); }} disabled={currentRoom === rooms.length - 1}>Next →</button>
-                  </div>
-                </div>
-                <div className="info-panel">
-                  <div className="room-info">
-                    <h2 className="room-title">{currentRoomData.name}</h2>
-                    <p className="room-description">{currentRoomData.description}</p>
-                  </div>
-                  {selectedArtwork ? (
-                    <>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
-                        <div><h3 className="artwork-heading">{selectedArtwork.title}</h3><div style={{ fontFamily: 'Poppins', fontSize: '0.8rem', color: '#999', textTransform: 'uppercase', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid #e8ddd3' }}>Film: {selectedArtwork.film}</div></div>
-                        <button className="close-btn" onClick={() => setSelectedArtwork(null)}>X</button>
-                      </div>
-                      <div className="panel-section"><div className="section-label">Installation Context</div><p className="narrative-text">{selectedArtwork.narrative}</p></div>
-                      <div className="panel-section"><div className="section-label">Specifications</div><div className="spec-row"><span className="spec-label">Scale</span><span className="spec-value">{selectedArtwork.scale}</span></div><div className="spec-row"><span className="spec-label">Placement</span><span className="spec-value">{selectedArtwork.placement}</span></div></div>
-                    </>
-                  ) : (
-                    <div className="empty-state">Click on an artwork to explore installation details</div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        }
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<VirtualGalleryWalk />);
-    </script>
-</body>
-</html>
+                .room-counter { font-family: 'Poppins', sans-serif; font-size: 0.85rem; color: #999; text-transform: uppercase; letter-
