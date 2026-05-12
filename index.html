@@ -3,165 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Gallery</title>
+    <title>Quantum Lab Gallery</title>
     <style>
-        * { margin: 0; padding: 0; }
-        body { background: #000; font-family: Arial; }
-        #canvas { display: block; }
-        #info { position: absolute; bottom: 20px; left: 20px; color: #0f0; font-size: 12px; }
-        #panel { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.9); color: #fff; padding: 20px; border-radius: 8px; max-width: 350px; display: none; border: 1px solid #444; }
-        .close { cursor: pointer; color: #999; float: right; font-size: 20px; }
-        .close:hover { color: #fff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0e27; overflow: hidden; font-family: 'Courier New', monospace; }
+        #canvas { display: block; width: 100%; height: 100vh; }
+        #hud { position: absolute; bottom: 30px; left: 30px; color: #00ff88; font-size: 13px; background: rgba(10, 14, 39, 0.8); padding: 20px; border: 1px solid #00ff88; border-radius: 4px; text-shadow: 0 0 10px #00ff88; }
+        #info { color: #00ff88; margin-bottom: 12px; }
+        .command { margin: 5px 0; opacity: 0.8; }
+        #panel { position: absolute; top: 40px; right: 40px; background: rgba(10, 14, 39, 0.95); color: #00ff88; padding: 25px; border: 2px solid #00ff88; border-radius: 4px; max-width: 380px; display: none; text-shadow: 0 0 5px #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+        #panel h2 { font-size: 18px; margin-bottom: 15px; border-bottom: 1px solid #00ff88; padding-bottom: 10px; }
+        #panel p { font-size: 12px; line-height: 1.6; margin-bottom: 10px; color: #88ff88; }
+        .close { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; color: #00ff88; }
+        .close:hover { color: #ff0088; text-shadow: 0 0 10px #ff0088; }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
-    <div id="info">
-        <strong>3D GALLERY</strong><br>
-        WASD = Move | Mouse = Look | Click = Details
+    <div id="hud">
+        <div id="info"><strong>&gt; QUANTUM LAB GALLERY</strong><br><span style="font-size: 11px; opacity: 0.7;">v1.0</span></div>
+        <div class="command">W/A/S/D - Navigate</div>
+        <div class="command">MOUSE - Look</div>
+        <div class="command">CLICK - Scan Art</div>
     </div>
     <div id="panel">
-        <span class="close" onclick="closePanel()">×</span>
-        <h3 id="panelTitle">Photo</h3>
-        <p id="panelText" style="font-size: 12px; margin-top: 10px;"></p>
+        <span class="close" onclick="closePanel()">&times;</span>
+        <h2 id="panelTitle">ARTWORK</h2>
+        <p id="panelText">Scanning...</p>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
         let scene, camera, renderer, frameGroup;
-        
+        const imageUrls = [
+            "https://static.wixstatic.com/media/87f849_b94cd47f31f5438ba5fbdc9d100af677~mv2.jpg",
+            "https://static.wixstatic.com/media/87f849_d888367849c4489fac8410db48145bc4~mv2.jpg",
+            "https://static.wixstatic.com/media/87f849_bca3730fab014b4db6a4b38b4fae72db~mv2_d_3637_2433_s_4_2.jpg",
+            "https://static.wixstatic.com/media/87f849_75bae3de86454fb7bef6083f841747ca~mv2_d_3637_2433_s_4_2.jpg",
+            "https://static.wixstatic.com/media/87f849_c23ab02f57a440b18896a5d51ccbd674~mv2.jpg",
+            "https://static.wixstatic.com/media/87f849_cf951a58d76d4bd0bf22b362dd4dbf7c~mv2.jpg"
+        ];
+
         function init() {
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x1a1a1a);
-            
+            scene.background = new THREE.Color(0x0a0e27);
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 1.6, -8);
-            
+            camera.position.set(0, 1.7, -10);
             renderer = new THREE.WebGLRenderer({ antialias: true, canvas: document.getElementById('canvas') });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.shadowMap.enabled = true;
 
-            const ambient = new THREE.AmbientLight(0xffffff, 0.7);
-            scene.add(ambient);
-            
-            const directional = new THREE.DirectionalLight(0xffffff, 0.8);
-            directional.position.set(50, 50, 50);
-            directional.castShadow = true;
-            scene.add(directional);
+            const light1 = new THREE.AmbientLight(0x0066ff, 0.5);
+            scene.add(light1);
+            const light2 = new THREE.DirectionalLight(0x00ff88, 0.8);
+            light2.position.set(40, 60, 40);
+            light2.castShadow = true;
+            scene.add(light2);
 
-            const floorMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), floorMat);
+            const floorGeo = new THREE.PlaneGeometry(200, 200);
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0x001a40 });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
             floor.rotation.x = -Math.PI / 2;
-            floor.receiveShadow = true;
             scene.add(floor);
 
-            const wallMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
-            
-            const backWall = new THREE.Mesh(new THREE.PlaneGeometry(50, 15), wallMat);
-            backWall.position.z = -5;
-            backWall.position.y = 7.5;
-            backWall.receiveShadow = true;
+            const gridHelper = new THREE.GridHelper(200, 40, 0x00ff88, 0x003366);
+            gridHelper.position.y = 0.01;
+            scene.add(gridHelper);
+
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0x0a1a3a });
+
+            // Lobby walls
+            const backWall = new THREE.Mesh(new THREE.PlaneGeometry(60, 20), wallMat);
+            backWall.position.set(0, 10, -8);
             scene.add(backWall);
             
-            const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(50, 15), wallMat);
+            const leftWall = new THREE.Mesh(new THREE.PlaneGeometry(60, 20), wallMat);
             leftWall.rotation.y = Math.PI / 2;
-            leftWall.position.x = -12;
-            leftWall.position.y = 7.5;
-            leftWall.receiveShadow = true;
+            leftWall.position.set(-15, 10, 0);
             scene.add(leftWall);
             
-            const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(50, 15), wallMat);
+            const rightWall = new THREE.Mesh(new THREE.PlaneGeometry(60, 20), wallMat);
             rightWall.rotation.y = -Math.PI / 2;
-            rightWall.position.x = 12;
-            rightWall.position.y = 7.5;
-            rightWall.receiveShadow = true;
+            rightWall.position.set(15, 10, 0);
             scene.add(rightWall);
 
-            const hallLeft = new THREE.Mesh(new THREE.PlaneGeometry(50, 15), wallMat);
+            // Hallway walls
+            const hallLeft = new THREE.Mesh(new THREE.PlaneGeometry(80, 20), wallMat);
             hallLeft.rotation.y = Math.PI / 2;
-            hallLeft.position.x = -12;
-            hallLeft.position.z = 15;
-            hallLeft.position.y = 7.5;
-            hallLeft.receiveShadow = true;
+            hallLeft.position.set(-15, 10, 25);
             scene.add(hallLeft);
             
-            const hallRight = new THREE.Mesh(new THREE.PlaneGeometry(50, 15), wallMat);
+            const hallRight = new THREE.Mesh(new THREE.PlaneGeometry(80, 20), wallMat);
             hallRight.rotation.y = -Math.PI / 2;
-            hallRight.position.x = 12;
-            hallRight.position.z = 15;
-            hallRight.position.y = 7.5;
-            hallRight.receiveShadow = true;
+            hallRight.position.set(15, 10, 25);
             scene.add(hallRight);
 
             frameGroup = new THREE.Group();
             scene.add(frameGroup);
 
-            createFrames();
+            createGallery();
             setupControls();
             animate();
         }
 
-        function createFrames() {
-            const photos = [
-                { pos: [-6, 1.8, -5], size: [3, 3], title: "Photograph 1" },
-                { pos: [-2, 1.8, -5], size: [3, 3], title: "Photograph 2" },
-                { pos: [2, 1.8, -5], size: [3, 2.25], title: "Photograph 3" },
-                { pos: [6, 1.8, -5], size: [3, 2.25], title: "Photograph 4" },
-                { pos: [-4, 1.8, 15], size: [2.5, 2.5], title: "Photograph 5" },
-                { pos: [4, 1.8, 15], size: [2.5, 2.5], title: "Photograph 6" }
-            ];
-
+        function createGallery() {
             const textureLoader = new THREE.TextureLoader();
-            const imageUrls = [
-                "https://static.wixstatic.com/media/87f849_b94cd47f31f5438ba5fbdc9d100af677~mv2.jpg/v1/fit/w_800,h_800,q_90,enc_avif,quality_auto/87f849_b94cd47f31f5438ba5fbdc9d100af677~mv2.jpg",
-                "https://static.wixstatic.com/media/87f849_d888367849c4489fac8410db48145bc4~mv2.jpg/v1/fit/w_800,h_800,q_90,enc_avif,quality_auto/87f849_d888367849c4489fac8410db48145bc4~mv2.jpg",
-                "https://static.wixstatic.com/media/87f849_bca3730fab014b4db6a4b38b4fae72db~mv2_d_3637_2433_s_4_2.jpg/v1/fit/w_800,h_600,q_90,enc_avif,quality_auto/87f849_bca3730fab014b4db6a4b38b4fae72db~mv2_d_3637_2433_s_4_2.jpg",
-                "https://static.wixstatic.com/media/87f849_75bae3de86454fb7bef6083f841747ca~mv2_d_3637_2433_s_4_2.jpg/v1/fit/w_800,h_600,q_90,enc_avif,quality_auto/87f849_75bae3de86454fb7bef6083f841747ca~mv2_d_3637_2433_s_4_2.jpg",
-                "https://static.wixstatic.com/media/87f849_c23ab02f57a440b18896a5d51ccbd674~mv2.jpg/v1/fit/w_800,h_800,q_90,enc_avif,quality_auto/87f849_c23ab02f57a440b18896a5d51ccbd674~mv2.jpg",
-                "https://static.wixstatic.com/media/87f849_cf951a58d76d4bd0bf22b362dd4dbf7c~mv2.jpg/v1/fit/w_800,h_800,q_90,enc_avif,quality_auto/87f849_cf951a58d76d4bd0bf22b362dd4dbf7c~mv2.jpg"
+
+            // Lobby photos
+            const lobbyPhotos = [
+                { pos: [-8, 2, -7.9], size: [3.5, 3.5], title: "Gallery I" },
+                { pos: [-1, 2, -7.9], size: [3.5, 3.5], title: "Gallery II" },
+                { pos: [6, 2, -7.9], size: [3.5, 3.5], title: "Gallery III" },
+                { pos: [13, 2, -7.9], size: [3.5, 3.5], title: "Gallery IV" }
             ];
 
-            photos.forEach((photo, i) => {
-                const material = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.1 });
-                textureLoader.load(imageUrls[i], (texture) => {
-                    material.map = texture;
+            lobbyPhotos.forEach((photo, i) => {
+                const material = new THREE.MeshStandardMaterial({ color: 0x1a3a5a });
+                textureLoader.load(imageUrls[i], (tex) => {
+                    material.map = tex;
                     material.needsUpdate = true;
                 });
 
-                const geo = new THREE.PlaneGeometry(photo.size[0], photo.size[1]);
-                const mesh = new THREE.Mesh(geo, material);
-                mesh.position.set(...photo.pos);
-                mesh.userData = { title: photo.title, index: i };
-                mesh.castShadow = true;
-                frameGroup.add(mesh);
-
-                const frameGeo = new THREE.BoxGeometry(photo.size[0] + 0.2, photo.size[1] + 0.2, 0.1);
-                const frameMat = new THREE.MeshStandardMaterial({ color: 0x8b7d6b });
-                const frame = new THREE.Mesh(frameGeo, frameMat);
-                frame.position.copy(mesh.position);
-                frame.position.z -= 0.06;
+                const frameGeo = new THREE.PlaneGeometry(photo.size[0], photo.size[1]);
+                const frame = new THREE.Mesh(frameGeo, material);
+                frame.position.set(...photo.pos);
+                frame.userData = { title: photo.title };
                 frameGroup.add(frame);
+
+                const borderGeo = new THREE.BoxGeometry(photo.size[0] + 0.3, photo.size[1] + 0.3, 0.15);
+                const borderMat = new THREE.MeshStandardMaterial({ color: 0x00ff88 });
+                const border = new THREE.Mesh(borderGeo, borderMat);
+                border.position.copy(frame.position);
+                border.position.z -= 0.08;
+                frameGroup.add(border);
+            });
+
+            // Hallway photos
+            const hallwayPhotos = [
+                { pos: [-8, 2, 25], size: [3, 3], title: "Gallery V" },
+                { pos: [8, 2, 25], size: [3, 3], title: "Gallery VI" }
+            ];
+
+            hallwayPhotos.forEach((photo, i) => {
+                const material = new THREE.MeshStandardMaterial({ color: 0x1a3a5a });
+                textureLoader.load(imageUrls[i + 4], (tex) => {
+                    material.map = tex;
+                    material.needsUpdate = true;
+                });
+
+                const frameGeo = new THREE.PlaneGeometry(photo.size[0], photo.size[1]);
+                const frame = new THREE.Mesh(frameGeo, material);
+                frame.position.set(...photo.pos);
+                frame.userData = { title: photo.title };
+                frameGroup.add(frame);
+
+                const borderGeo = new THREE.BoxGeometry(photo.size[0] + 0.3, photo.size[1] + 0.3, 0.15);
+                const borderMat = new THREE.MeshStandardMaterial({ color: 0x00ff88 });
+                const border = new THREE.Mesh(borderGeo, borderMat);
+                border.position.copy(frame.position);
+                border.position.z -= 0.08;
+                frameGroup.add(border);
             });
         }
 
         const keys = {};
-        const moveSpeed = 0.15;
-        
+
         function setupControls() {
             document.addEventListener('keydown', (e) => keys[e.key.toLowerCase()] = true);
             document.addEventListener('keyup', (e) => keys[e.key.toLowerCase()] = false);
-
-            let isLocked = false;
-            document.addEventListener('click', () => {
-                document.body.requestPointerLock();
-            });
             
-            document.addEventListener('pointerlockchange', () => {
-                isLocked = !!document.pointerLockElement;
-            });
+            let locked = false;
+            document.addEventListener('click', () => document.body.requestPointerLock());
+            document.addEventListener('pointerlockchange', () => locked = !!document.pointerLockElement);
             
             document.addEventListener('mousemove', (e) => {
-                if (!isLocked) return;
+                if (!locked) return;
                 const euler = new THREE.Euler(0, 0, 0, 'YXZ');
                 euler.setFromQuaternion(camera.quaternion);
                 euler.rotateY(-e.movementX * 0.003);
@@ -172,42 +188,32 @@
 
             const raycaster = new THREE.Raycaster();
             const mouse = new THREE.Vector2();
-            
             window.addEventListener('click', (e) => {
                 mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
                 mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
                 raycaster.setFromCamera(mouse, camera);
                 const hits = raycaster.intersectObjects(frameGroup.children);
-                
-                if (hits.length > 0) {
-                    const obj = hits[0].object;
-                    if (obj.userData.title) {
-                        document.getElementById('panelTitle').textContent = obj.userData.title;
-                        document.getElementById('panelText').textContent = 'Keep exploring the gallery!';
-                        document.getElementById('panel').style.display = 'block';
-                    }
+                if (hits.length > 0 && hits[0].object.userData.title) {
+                    document.getElementById('panelTitle').textContent = '> ' + hits[0].object.userData.title;
+                    document.getElementById('panelText').textContent = 'Neural interface connected. Artwork scanned successfully.';
+                    document.getElementById('panel').style.display = 'block';
                 }
             });
         }
 
-        window.closePanel = function() {
-            document.getElementById('panel').style.display = 'none';
-        };
+        window.closePanel = () => document.getElementById('panel').style.display = 'none';
 
         function animate() {
             requestAnimationFrame(animate);
-
             const vec = new THREE.Vector3();
             if (keys['w']) vec.z -= 1;
             if (keys['s']) vec.z += 1;
             if (keys['a']) vec.x -= 1;
             if (keys['d']) vec.x += 1;
-            
             vec.normalize();
             vec.applyQuaternion(camera.quaternion);
-            camera.position.addScaledVector(vec, moveSpeed);
-            camera.position.y = Math.max(1, camera.position.y);
-
+            camera.position.addScaledVector(vec, 0.2);
+            camera.position.y = Math.max(1.5, camera.position.y);
             renderer.render(scene, camera);
         }
 
